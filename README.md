@@ -127,8 +127,8 @@ ORDER BY tp.avg_roas DESC
 
 **Key Insights:**
 - TikTok Ads receives 23.89% of budget but generates 37.32% of revenue
-- Budget allocation is MISALIGNED with performance
-- Recommend INCREASING investment in TikTok Ads (highest ROAS: 9.54)
+- Budget allocation is misaligned with performance
+- Recommend increasing investment in TikTok Ads (highest ROAS: 9.54)
 
 
 ---
@@ -196,16 +196,6 @@ ORDER BY conversion_rate DESC
 ## 💡 Skills Demonstrated
 
 Aggregations (SUM, AVG) • GROUP BY & HAVING • CTEs • Window Functions (RANK) • PARTITION BY • Subqueries • ROUND & FORMAT • Percentage Calculations • Marketing Metrics
-
----
-
-## 🚀 How to Run
-
-**db-fiddle (No Installation):**
-1. Go to [db-fiddle.com](https://www.db-fiddle.com/)
-2. Select MySQL v9
-3. Copy CREATE TABLE and INSERT statements
-4. Run any exercise query
 
 ---
 
