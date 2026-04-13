@@ -1,0 +1,715 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Ads Performance Analysis | SQL Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: #f8fafc;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1e3a8a;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #93c5fd;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-blue { background-color: #3b82f6; }
+        .badge-green { background-color: #10b981; }
+        .badge-orange { background-color: #f59e0b; }
+        .badge-teal { background-color: #14b8a6; }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 2rem;
+        }
+
+        section:nth-child(even) {
+            background-color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #1e3a8a;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-card p {
+            color: #64748b;
+        }
+
+        /* Objectives */
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .objective-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .objective-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .objective-card strong {
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid #3b82f6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .metric-card h3 {
+            color: #1e3a8a;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* SQL Exercises */
+        .exercise {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .exercise h3 {
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .business-question {
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .business-question strong {
+            color: #1e3a8a;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 20px 0 0 #f59e0b, 40px 0 0 #10b981;
+        }
+
+        .code-block pre {
+            margin-top: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .sql-keyword {
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .sql-function {
+            color: #fbbf24;
+        }
+
+        .sql-number {
+            color: #fb923c;
+        }
+
+        .screenshot {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .insights {
+            background: #f0fdf4;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #10b981;
+            margin-top: 1.5rem;
+        }
+
+        .insights h4 {
+            color: #166534;
+            margin-bottom: 0.75rem;
+        }
+
+        .insights ul {
+            list-style-position: inside;
+            color: #166534;
+        }
+
+        .insights li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Technologies */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .tech-card h3 {
+            color: #1e3a8a;
+            font-size: 1.1rem;
+        }
+
+        /* Skills */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .skill-chip {
+            background: #eff6ff;
+            color: #1e3a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .skill-chip:hover {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .github-button {
+            display: inline-block;
+            background: white;
+            color: #1e3a8a;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .github-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            section {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#objectives">Objectives</a></li>
+            <li><a href="#metrics">Metrics</a></li>
+            <li><a href="#exercises">SQL Exercises</a></li>
+            <li><a href="#technologies">Technologies</a></li>
+            <li><a href="#skills">Skills</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>📊 Global Ads Performance Analysis</h1>
+        <p>SQL-based analysis of advertising performance across Google Ads, Meta Ads, and TikTok Ads</p>
+        <div class="badges">
+            <span class="badge badge-blue">SQL - MySQL</span>
+            <span class="badge badge-green">Status: Complete</span>
+            <span class="badge badge-orange">Year: 2024</span>
+            <span class="badge badge-teal">Dataset: 1.8K rows</span>
+        </div>
+    </div>
+
+    <!-- Project Overview -->
+    <section id="overview">
+        <div class="container">
+            <h2>📋 Project Overview</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem; color: #64748b;">
+                This project analyzes advertising performance across three major platforms using MySQL v9. 
+                The dataset contains 1,800 rows of 2024 campaign data from Kaggle, providing insights into 
+                ROI, market performance, budget allocation, and conversion efficiency.
+            </p>
+            <div class="overview-grid">
+                <div class="info-card">
+                    <h3>🗄️ Database</h3>
+                    <p>MySQL v9</p>
+                </div>
+                <div class="info-card">
+                    <h3>📊 Dataset Size</h3>
+                    <p>1,800 rows</p>
+                </div>
+                <div class="info-card">
+                    <h3>📅 Period</h3>
+                    <p>January - December 2024</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 Platforms</h3>
+                    <p>Google Ads, Meta Ads, TikTok Ads</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Objectives -->
+    <section id="objectives">
+        <div class="container">
+            <h2>🎯 Business Objectives</h2>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <strong>1.</strong> Evaluate which platform delivers the best ROI (ROAS)
+                </div>
+                <div class="objective-card">
+                    <strong>2.</strong> Identify top-performing markets by revenue
+                </div>
+                <div class="objective-card">
+                    <strong>3.</strong> Optimize budget allocation across platforms
+                </div>
+                <div class="objective-card">
+                    <strong>4.</strong> Rank top campaigns per platform
+                </div>
+                <div class="objective-card">
+                    <strong>5.</strong> Analyze industry conversion efficiency
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Metrics -->
+    <section id="metrics">
+        <div class="container">
+            <h2>📈 Key Metrics Analyzed</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>ROAS</h3>
+                    <p>Return on Ad Spend</p>
+                </div>
+                <div class="metric-card">
+                    <h3>CPA</h3>
+                    <p>Cost Per Acquisition</p>
+                </div>
+                <div class="metric-card">
+                    <h3>CTR</h3>
+                    <p>Click-Through Rate</p>
+                </div>
+                <div class="metric-card">
+                    <h3>CVR</h3>
+                    <p>Conversion Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SQL Exercises -->
+    <section id="exercises">
+        <div class="container">
+            <h2>🔍 SQL Exercises</h2>
+
+            <!-- Exercise 1 -->
+            <div class="exercise">
+                <h3>Exercise 1: Overall Performance by Platform</h3>
+                <div class="business-question">
+                    <strong>Business Question:</strong> Which platform delivers the best ROI?
+                </div>
+                <div class="code-block">
+                    <pre><span class="sql-keyword">SELECT</span> platform,
+<span class="sql-function">ROUND</span>(<span class="sql-function">SUM</span>(ad_spend),<span class="sql-number">2</span>) <span class="sql-keyword">AS</span> total_ad_spend, 
+<span class="sql-function">ROUND</span>(<span class="sql-function">SUM</span>(revenue),<span class="sql-number">2</span>) <span class="sql-keyword">AS</span> total_revenue, 
+<span class="sql-function">ROUND</span>(<span class="sql-function">AVG</span>(ROAS),<span class="sql-number">2</span>) <span class="sql-keyword">AS</span> avg_roas, 
+<span class="sql-function">SUM</span>(conversions) <span class="sql-keyword">AS</span> total_conversions
+<span class="sql-keyword">FROM</span> marketing
+<span class="sql-keyword">GROUP BY</span> platform
+<span class="sql-keyword">ORDER BY</span> <span class="sql-function">AVG</span>(ROAS) <span class="sql-keyword">DESC</span></pre>
+                </div>
+                <div class="screenshot">
+                    <img src="screenshots/exercise1_results.png" alt="Exercise 1 Results">
+                </div>
+                <div class="insights">
+                    <h4>Key Insights:</h4>
+                    <ul>
+                        <li>TikTok Ads has the highest average ROAS of 9.54</li>
+                        <li>Meta Ads generated the most revenue at $22,033,744.95</li>
+                        <li>TikTok Ads delivered 122,452 total conversions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="exercise">
+                <h3>Exercise 2: Top 5 Countries with Best Performance</h3>
+                <div class="business-question">
+                    <strong>Business Question:</strong> Which markets are most profitable?
+                </div>
+                <div class="code-block">
+                    <pre><span class="sql-keyword">SELECT</span> country,
+<span class="sql-function">ROUND</span>(<span class="sql-function">SUM</span>(revenue),<span class="sql-number">2</span>) <span class="sql-keyword">AS</span> total_revenue,
+<span class="sql-function">ROUND</span>(<span class="sql-function">AVG</span>(ROAS),<span class="sql-number">2</span>) <span class="sql-keyword">AS</span> avg_roas,
+<span class="sql-function">SUM</span>(conversions) <span class="sql-keyword">AS</span> total_conversions
+<span class="sql-keyword">FROM</span> marketing
+<span class="sql-keyword">GROUP BY</span> country
+<span class="sql-keyword">ORDER BY</span> <span class="sql-function">SUM</span>(revenue) <span class="sql-keyword">DESC</span>
+<span class="sql-keyword">LIMIT</span> <span class="sql-number">5</span></pre>
+                </div>
+                <div class="screenshot">
+                    <img src="screenshots/exercise2_results.png" alt="Exercise 2 Results">
+                </div>
+                <div class="insights">
+                    <h4>Key Insights:</h4>
+                    <ul>
+                        <li>UAE is the top market with $7,939,594 in revenue</li>
+                        <li>UAE has the best ROAS at 6.96</li>
+                        <li>Top 5 countries generated $39.3M in combined revenue</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="exercise">
+                <h3>Exercise 3: Budget Allocation Analysis with CTE</h3>
+                <div class="business-question">
+                    <strong>Business Question:</strong> How is budget distributed across platforms and does it align with returns?
+                </div>
+                <div class="code-block">
+                    <pre><span class="sql-keyword">WITH</span> total_all <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span>
+        <span class="sql-function">SUM</span>(ad_spend) <span class="sql-keyword">AS</span> total_budget,
+        <span class="sql-function">SUM</span>(revenue) <span class="sql-keyword">AS</span> total_revenue_all
+    <span class="sql-keyword">FROM</span> marketing
+),
+total_platform <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span>
+        platform,
+        <span class="sql-function">SUM</span>(ad_spend) <span class="sql-keyword">AS</span> total_ad_spend,
+        <span class="sql-function">AVG</span>(ROAS) <span class="sql-keyword">AS</span> avg_roas,
+        <span class="sql-function">SUM</span>(revenue) <span class="sql-keyword">AS</span> total_revenue
+    <span class="sql-keyword">FROM</span> marketing
+    <span class="sql-keyword">GROUP BY</span> platform
+)
+<span class="sql-keyword">SELECT</span>
+    tp.platform,
+    <span class="sql-function">FORMAT</span>(tp.total_ad_spend, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> total_ad_spend,
+    <span class="sql-function">ROUND</span>((tp.total_ad_spend / ta.total_budget) * <span class="sql-number">100</span>, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> percentage_total_budget,
+    <span class="sql-function">ROUND</span>(tp.avg_roas, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> avg_roas,
+    <span class="sql-function">FORMAT</span>(tp.total_revenue, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> total_revenue,
+    <span class="sql-function">ROUND</span>((tp.total_revenue / ta.total_revenue_all) * <span class="sql-number">100</span>, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> percentage_total_revenue
+<span class="sql-keyword">FROM</span> total_platform tp, total_all ta
+<span class="sql-keyword">ORDER BY</span> tp.avg_roas <span class="sql-keyword">DESC</span></pre>
+                </div>
+                <div class="screenshot">
+                    <img src="screenshots/exercise3_results.png" alt="Exercise 3 Results">
+                </div>
+                <div class="insights">
+                    <h4>Key Insights:</h4>
+                    <ul>
+                        <li>TikTok Ads receives 23.89% of budget but generates 37.32% of revenue</li>
+                        <li>Budget allocation is misaligned with performance</li>
+                        <li>Recommend increasing investment in TikTok Ads (highest ROAS: 9.54)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="exercise">
+                <h3>Exercise 4: Top 3 Campaigns per Platform (Window Function)</h3>
+                <div class="business-question">
+                    <strong>Business Question:</strong> What are the top 3 best-performing campaigns on each platform?
+                </div>
+                <div class="code-block">
+                    <pre><span class="sql-keyword">SELECT</span> date, platform, ROAS, best_campaigns
+<span class="sql-keyword">FROM</span> (
+    <span class="sql-keyword">SELECT</span> date, platform, ROAS,
+    <span class="sql-function">RANK</span>() <span class="sql-keyword">OVER</span> (<span class="sql-keyword">PARTITION BY</span> platform <span class="sql-keyword">ORDER BY</span> ROAS <span class="sql-keyword">DESC</span>) <span class="sql-keyword">AS</span> best_campaigns
+    <span class="sql-keyword">FROM</span> marketing
+) <span class="sql-keyword">AS</span> ranked
+<span class="sql-keyword">WHERE</span> best_campaigns <= <span class="sql-number">3</span>
+<span class="sql-keyword">ORDER BY</span> platform, best_campaigns</pre>
+                </div>
+                <div class="screenshot">
+                    <img src="screenshots/exercise5_results.png" alt="Exercise 4 Results">
+                </div>
+                <div class="insights">
+                    <h4>Key Insights:</h4>
+                    <ul>
+                        <li>Top campaign on TikTok Ads achieved ROAS of 49.00 (highest overall)</li>
+                        <li>Google Ads shows most consistent performance (lowest variation between top campaigns)</li>
+                        <li>Best campaigns occurred during Q2 and Q3 (May-September)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="exercise">
+                <h3>Exercise 5: Efficiency Analysis by Industry</h3>
+                <div class="business-question">
+                    <strong>Business Question:</strong> Which industries convert clicks to conversions most efficiently?
+                </div>
+                <div class="code-block">
+                    <pre><span class="sql-keyword">SELECT</span>
+industry,
+<span class="sql-function">SUM</span>(clicks) <span class="sql-keyword">AS</span> total_clicks,
+<span class="sql-function">SUM</span>(conversions) <span class="sql-keyword">AS</span> total_conversions,
+<span class="sql-function">ROUND</span>((<span class="sql-function">SUM</span>(conversions) / <span class="sql-function">SUM</span>(clicks)) * <span class="sql-number">100</span>, <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> conversion_rate,
+<span class="sql-function">ROUND</span>(<span class="sql-function">AVG</span>(CPA), <span class="sql-number">2</span>) <span class="sql-keyword">AS</span> avg_cpa
+<span class="sql-keyword">FROM</span> marketing
+<span class="sql-keyword">GROUP BY</span> industry
+<span class="sql-keyword">HAVING</span> <span class="sql-function">SUM</span>(conversions) > <span class="sql-number">50</span>
+<span class="sql-keyword">ORDER BY</span> conversion_rate <span class="sql-keyword">DESC</span></pre>
+                </div>
+                <div class="screenshot">
+                    <img src="screenshots/exercise6_results.png" alt="Exercise 5 Results">
+                </div>
+                <div class="insights">
+                    <h4>Key Insights:</h4>
+                    <ul>
+                        <li>Healthcare has the highest conversion rate at 4.74%</li>
+                        <li>E-commerce has the lowest CPA at $45.04</li>
+                        <li>Industries with >50 conversions show 4.58% average conversion rate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies -->
+    <section id="technologies">
+        <div class="container">
+            <h2>🛠️ Technologies Used</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>SQL</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>MySQL v9</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>db-fiddle</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>Kaggle</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>GitHub</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+        <div class="container">
+            <h2>💡 Skills Demonstrated</h2>
+            <div class="skills-container">
+                <span class="skill-chip">Aggregations (SUM, AVG)</span>
+                <span class="skill-chip">GROUP BY & HAVING</span>
+                <span class="skill-chip">CTEs</span>
+                <span class="skill-chip">Window Functions (RANK)</span>
+                <span class="skill-chip">PARTITION BY</span>
+                <span class="skill-chip">Subqueries</span>
+                <span class="skill-chip">ROUND & FORMAT</span>
+                <span class="skill-chip">Percentage Calculations</span>
+                <span class="skill-chip">Marketing Metrics</span>
+                <span class="skill-chip">Data Analysis</span>
+                <span class="skill-chip">ROAS Optimization</span>
+                <span class="skill-chip">Marketing Analytics</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Marketing Data Analyst Portfolio Project</p>
+            <p style="margin-top: 0.5rem; color: #93c5fd;">Demonstrating SQL proficiency in analyzing digital advertising performance data</p>
+            <a href="https://github.com/jusmartinsmm-dot/global-ads-performance-sql" target="_blank" rel="noopener noreferrer" class="github-button">
+                View on GitHub
+            </a>
+            <p style="margin-top: 2rem; font-size: 0.875rem; color: #93c5fd;">Last Updated: March 31, 2026</p>
+        </div>
+    </footer>
+</body>
+</html>
+
